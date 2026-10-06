@@ -197,6 +197,16 @@ textarea{width:100%;min-height:80px;padding:10px;border:1.5px solid var(--line);
 .detail .line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.95rem}
 .detail .line:last-of-type{border-bottom:0}
 .stats.six{grid-template-columns:repeat(3,1fr)}
+/* To-do */
+.todo{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.todo:last-of-type{border-bottom:0}
+.todo input{width:24px;height:24px;flex:none;accent-color:var(--teal)}
+.todo span{flex:1}
+.todo.done span{text-decoration:line-through;color:var(--muted)}
+.todo .x{display:none}
+.editing .todo .x{display:inline-block}
+.addtodo{display:flex;gap:8px;margin-top:10px}
+.addtodo input{flex:1;min-width:0;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
 /* Bandeau jour passé */
 .banner{background:var(--peach-soft);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:.95rem}
 .banner .btn{padding:8px 12px;font-size:.9rem}
@@ -245,6 +255,13 @@ textarea{width:100%;min-height:80px;padding:10px;border:1.5px solid var(--line);
       </div>
     </div>
     <div class="week" id="weekDots"></div>
+  </div>
+
+  <h2>To-do</h2>
+  <div class="block" id="todoWrap">
+    <div class="row"><span id="todoCount" class="muted small"></span><button class="btn ghost" id="todoEdit" style="padding:6px 12px;font-size:.9rem">Modifier la liste</button></div>
+    <div id="todoList"></div>
+    <div class="addtodo" id="todoAdd" style="display:none"><input type="text" id="todoNew" placeholder="Nouvelle tâche" maxlength="60"><button class="btn" id="todoAddBtn">Ajouter</button></div>
   </div>
 
   <h2>Eau</h2>
@@ -468,6 +485,7 @@ textarea{width:100%;min-height:80px;padding:10px;border:1.5px solid var(--line);
   <div class="chips" id="periodChips"></div>
   <div class="stats" id="sumStats"></div>
   <div class="stats" id="sumStats2"></div>
+  <div class="stats" id="sumStats3"></div>
   <div id="sumMsg"></div>
 
   <h2>Calendrier</h2>
@@ -545,6 +563,7 @@ let S = load() || fresh();
 function migrate(){
   const f = fresh();
   S.walk = Object.assign(f.walk, S.walk || {});
+  S.todo = Array.isArray(S.todo) ? S.todo : ["Skin care matin","Faire son lit","Travailler","Aspirateur","Skin care soir"];
   S.days = S.days || {}; S.weights = S.weights || []; S.courses = S.courses || {};
 }
 migrate();
@@ -558,8 +577,11 @@ const MEALS = [
 ];
 function day(k){
   if (!S.days[k]) S.days[k] = { water:0, meals:{ pdj:[0,0,0], midi:[0,0,0], gouter:[0,0], soir:[0,0,0] }, walk:{ min:"", pente:"", vit:"", done:false } };
+  if (!S.days[k].todo) S.days[k].todo = {};
   return S.days[k];
 }
+const todoDone = d => d && d.todo ? S.todo.filter(t => d.todo[t]).length : 0;
+const hasData = d => scoreOf(d) > 0 || todoDone(d) > 0;
 const waterGoal = d => d.walk.done ? 10 : 8;
 function scoreOf(d){
   if (!d) return 0;
@@ -641,6 +663,8 @@ function renderToday(){
     $("meals").appendChild(div);
   });
 
+  renderTodo(d);
+
   $("wMin").value = d.walk.min; $("wPente").value = d.walk.pente; $("wVit").value = d.walk.vit;
   $("wMin").placeholder = p.min; $("wPente").placeholder = p.pente; $("wVit").placeholder = p.vit;
   $("wDone").textContent = d.walk.done ? "✓ Séance faite (annuler)" : "Séance faite";
@@ -666,6 +690,37 @@ function renderToday(){
     $("weekDots").appendChild(div);
   }
 }
+let todoEditing = false;
+function renderTodo(d){
+  const n = todoDone(d);
+  $("todoCount").textContent = S.todo.length ? `${n} sur ${S.todo.length} fait${n > 1 ? "s" : ""}` : "Ta liste est vide";
+  $("todoWrap").classList.toggle("editing", todoEditing);
+  $("todoEdit").textContent = todoEditing ? "Terminé" : "Modifier la liste";
+  $("todoAdd").style.display = todoEditing ? "flex" : "none";
+  $("todoList").innerHTML = "";
+  S.todo.forEach((t, i) => {
+    const on = !!d.todo[t];
+    const row = document.createElement("label");
+    row.className = "todo" + (on ? " done" : "");
+    row.innerHTML = `<input type="checkbox" ${on ? "checked" : ""}><span></span><button class="x" aria-label="Supprimer">×</button>`;
+    row.querySelector("span").textContent = t;
+    row.querySelector("input").onchange = e => {
+      d.todo[t] = e.target.checked; save(); renderTodo(d);
+      if (e.target.checked && todoDone(d) === S.todo.length) toast("To-do terminée ✨");
+    };
+    row.querySelector(".x").onclick = e => { e.preventDefault(); S.todo.splice(i, 1); save(); renderTodo(d); };
+    $("todoList").appendChild(row);
+  });
+}
+$("todoEdit").onclick = () => { todoEditing = !todoEditing; renderTodo(day(viewKey)); };
+function addTodo(){
+  const v = $("todoNew").value.trim();
+  if (!v) return;
+  if (S.todo.includes(v)) return toast("Cette tâche existe déjà");
+  S.todo.push(v); $("todoNew").value = ""; save(); renderTodo(day(viewKey));
+}
+$("todoAddBtn").onclick = addTodo;
+$("todoNew").onkeydown = e => { if (e.key === "Enter") addTodo(); };
 ["wMin","wPente","wVit"].forEach(id => $(id).oninput = e => {
   const map = { wMin:"min", wPente:"pente", wVit:"vit" };
   day(viewKey).walk[map[id]] = e.target.value; save();
@@ -926,10 +981,11 @@ function renderSummary(){
     $("periodChips").appendChild(b);
   });
   const keys = rangeKeys();
-  let tracked = 0, scoreSum = 0, water = 0, walks = 0, mins = 0, full = 0, mealTot = 0;
+  let tracked = 0, scoreSum = 0, water = 0, walks = 0, mins = 0, full = 0, mealTot = 0, tdDone = 0, tdTot = 0;
   keys.forEach(k => {
     const d = S.days[k], s = scoreOf(d);
-    if (!s) return;
+    if (!hasData(d)) return;
+    tdDone += todoDone(d); tdTot += S.todo.length;
     tracked++; scoreSum += s; water += d.water;
     if (d.walk.done){ walks++; mins += parseFloat(d.walk.min) || 0; }
     MEALS.forEach(m => { mealTot++; if (d.meals[m.k].every(Boolean)) full++; });
@@ -937,6 +993,8 @@ function renderSummary(){
   const avg = tracked ? Math.round(scoreSum / tracked) : 0;
   $("sumStats").innerHTML = `<div><b>${tracked}/${keys.length}</b>jours suivis</div><div><b>${avg}</b>score moyen</div><div><b>${tracked ? liters(water / tracked) : "0 L"}</b>d'eau par jour</div>`;
   $("sumStats2").innerHTML = `<div><b>${walks}</b>séances de marche</div><div><b>${Math.round(mins)}</b>minutes de marche</div><div><b>${mealTot ? Math.round(full / mealTot * 100) : 0} %</b>repas complets</div>`;
+  $("sumStats3").innerHTML = `<div><b>${tdTot ? Math.round(tdDone / tdTot * 100) : 0} %</b>de la to-do faite</div>` +
+    S.todo.slice(0, 2).map(t => `<div><b>${keys.filter(k => S.days[k] && S.days[k].todo && S.days[k].todo[t]).length}</b>${t}</div>`).join("");
   let msg = "";
   if (tracked >= 3){
     const tips = [];
@@ -968,19 +1026,20 @@ $("calPrev").onclick = () => { calM--; if (calM < 0){ calM = 11; calY--; } rende
 $("calNext").onclick = () => { calM++; if (calM > 11){ calM = 0; calY++; } renderCal(); };
 function renderDayDetail(){
   if (!selKey){ $("dayDetail").innerHTML = ""; return; }
-  const d = S.days[selKey], s = scoreOf(d);
+  const d = S.days[selKey], s = scoreOf(d), has = hasData(d);
   let h = `<div class="block"><h3>${longDate(selKey)}</h3>`;
-  if (!s) h += `<p class="muted small">Rien de noté ce jour-là.</p>`;
+  if (!has) h += `<p class="muted small">Rien de noté ce jour-là.</p>`;
   else {
     h += `<p>Score <b>${s}</b>/100, eau <b>${liters(d.water)}</b></p>`;
     MEALS.forEach(m => { h += `<p class="small" style="margin:3px 0"><b>${m.n} :</b> ${m.c.map((c, i) => (d.meals[m.k][i] ? "✓ " : "✗ ") + c).join(", ")}</p>`; });
     h += d.walk.done
       ? `<p class="small" style="margin-top:6px"><b>Marche :</b> ${d.walk.min || "?"} min, pente ${d.walk.pente ? nf(d.walk.pente) : "?"} %, ${d.walk.vit ? nf(d.walk.vit) : "?"} km/h</p>`
       : `<p class="small" style="margin-top:6px"><b>Marche :</b> pas de séance</p>`;
+    if (S.todo.length) h += `<p class="small" style="margin-top:6px"><b>To-do (${todoDone(d)}/${S.todo.length}) :</b> ${S.todo.map(t => (d.todo && d.todo[t] ? "✓ " : "✗ ") + t).join(", ")}</p>`;
     const wt = S.weights.find(w => w.date === selKey);
     if (wt) h += `<p class="small"><b>Pesée :</b> ${nf(wt.kg)} kg</p>`;
   }
-  h += `<button class="btn ghost wide" id="editDay" style="margin-top:8px">${s ? "Modifier ce jour" : "Remplir ce jour"}</button></div>`;
+  h += `<button class="btn ghost wide" id="editDay" style="margin-top:8px">${has ? "Modifier ce jour" : "Remplir ce jour"}</button></div>`;
   $("dayDetail").innerHTML = h;
   $("editDay").onclick = () => { viewKey = selKey; go("today"); };
 }
