@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1E6E6A">
+<title>Mon plan — guide & suivi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F5F2; --surface:#FFFFFF; --ink:#1C2826; --muted:#5F6E6B; --line:#DCE5E0;
+  --teal:#1E6E6A; --teal-soft:#D6EBE6; --peach:#F2A65A; --peach-soft:#FCE8D3;
+  --water:#3A7FC1; --water-soft:#DCEAF7; --warn:#B4513A; --warn-soft:#F8E1DA;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A19; --surface:#1B2624; --ink:#E6EEEC; --muted:#9AABA7; --line:#2C3B38;
+    --teal:#5FC0B4; --teal-soft:#1F3B37; --peach:#F5B577; --peach-soft:#3A2C1E;
+    --water:#7BB4EA; --water-soft:#1C3046; --warn:#F09A84; --warn-soft:#3B231D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A19; --surface:#1B2624; --ink:#E6EEEC; --muted:#9AABA7; --line:#2C3B38;
+  --teal:#5FC0B4; --teal-soft:#1F3B37; --peach:#F5B577; --peach-soft:#3A2C1E;
+  --water:#7BB4EA; --water-soft:#1C3046; --warn:#F09A84; --warn-soft:#3B231D;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+main{max-width:560px;margin:0 auto;padding:20px 18px 120px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0}
+h1{font-size:2.1rem;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.45rem;font-weight:700;margin:34px 0 12px}
+h3{font-size:1.1rem;font-weight:700;margin:0 0 6px}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--peach);outline-offset:2px;border-radius:6px}
+.view{display:none}
+.view.active{display:block}
+
+/* Hero: la pente de la semaine */
+.hero{position:relative;padding:8px 0 4px}
+.hero .date{color:var(--muted);font-size:.95rem;margin-bottom:4px}
+.slope{display:block;width:100%;height:70px;margin:14px 0 2px}
+.slope line{stroke:var(--teal);stroke-width:6;stroke-linecap:round}
+.slope .ground{stroke:var(--line);stroke-width:2}
+.slope text{fill:var(--muted);font-size:13px;font-family:var(--body)}
+.target{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.98rem}
+.target b{font-family:var(--display);font-size:1.25rem}
+
+.block{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* Eau */
+.glasses{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0 6px}
+.glass{aspect-ratio:3/4;border:2px solid var(--water);border-radius:6px 6px 12px 12px;background:transparent;position:relative;overflow:hidden;padding:0}
+.glass::after{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:var(--water);transition:height .25s ease}
+.glass.full::after{height:78%}
+.glass span{position:absolute;inset:0;display:grid;place-items:center;font-size:.8rem;z-index:1;color:var(--water);font-weight:700}
+.glass.full span{color:#fff}
+
+/* Repas */
+.meal{padding:12px 0;border-top:1px solid var(--line)}
+.meal:first-of-type{border-top:0;padding-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:7px 14px;font-size:.95rem}
+.chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.chip.filter.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* Inputs */
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+label.f{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted);gap:4px}
+input[type=number],input[type=date],select{width:100%;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+.btn{border:0;border-radius:12px;padding:12px 18px;background:var(--teal);color:#fff;font-weight:700}
+.btn.alt{background:var(--peach-soft);color:var(--ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.wide{width:100%}
+.btn.done{background:var(--peach);color:#1C2826}
+
+/* Score */
+.score{display:flex;align-items:center;gap:16px}
+.ring{width:84px;height:84px;flex:none}
+.ring circle{fill:none;stroke-width:9}
+.ring .bgc{stroke:var(--line)}
+.ring .fg{stroke:var(--teal);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .4s}
+.ring text{fill:var(--ink);font-family:var(--display);font-weight:800;font-size:22px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px;text-align:center;font-size:.78rem;color:var(--muted)}
+.dot{width:26px;height:26px;border-radius:50%;margin:4px auto 0;background:var(--line)}
+
+/* Guide */
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:10px 0;padding:0 16px}
+summary{font-family:var(--display);font-weight:700;font-size:1.08rem;padding:14px 0;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.4rem;color:var(--teal)}
+details[open] summary::after{content:"–"}
+details > div{padding:0 0 14px}
+ul{padding-left:20px;margin:6px 0 10px}
+li{margin:3px 0}
+.note{border-left:4px solid var(--peach);background:var(--peach-soft);padding:10px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:.95rem}
+.alert{border-left:4px solid var(--warn);background:var(--warn-soft);padding:10px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:.95rem}
+.plate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.plate div{border-radius:14px;padding:12px;font-size:.95rem}
+.plate .p{background:var(--teal-soft);grid-row:span 2}
+.plate .f{background:var(--peach-soft)}
+.plate .s{background:var(--water-soft)}
+.plate b{display:block;font-family:var(--display);font-size:1.05rem}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-weight:700}
+
+/* Idées repas */
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.tag{font-size:.8rem;padding:2px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.tag.P{background:var(--teal-soft);border-color:transparent}
+.tag.F{background:var(--peach-soft);border-color:transparent}
+.tag.S{background:var(--water-soft);border-color:transparent}
+
+/* Courses */
+.check{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.check input{width:22px;height:22px;accent-color:var(--teal)}
+.check.got span{text-decoration:line-through;color:var(--muted)}
+
+/* Timer */
+.timer{text-align:center;padding:20px 16px}
+.timer .phase{font-family:var(--display);font-weight:700;font-size:1.3rem}
+.timer .clock{font-family:var(--display);font-weight:800;font-size:4rem;letter-spacing:-.03em;line-height:1;margin:10px 0}
+.timer .set{font-size:1.05rem}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:14px 0}
+.bar i{display:block;height:100%;width:0;background:var(--teal);transition:width .3s}
+.btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+/* Poids */
+.chart{width:100%;height:auto;display:block}
+.chart .grid{stroke:var(--line)}
+.chart .goal{stroke:var(--peach);stroke-dasharray:6 5;stroke-width:2}
+.chart .line{fill:none;stroke:var(--teal);stroke-width:3;stroke-linejoin:round}
+.chart circle{fill:var(--teal)}
+.chart text{fill:var(--muted);font-size:11px;font-family:var(--body)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.stats div{background:var(--bg);border-radius:12px;padding:10px;text-align:center;font-size:.85rem;color:var(--muted)}
+.stats b{display:block;font-family:var(--display);font-size:1.35rem;color:var(--ink)}
+.hist{font-size:.95rem}
+.hist .row{padding:7px 0;border-bottom:1px solid var(--line)}
+.x{background:none;border:0;color:var(--muted);font-size:1.1rem;padding:2px 8px}
+
+/* Nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
+nav button{background:none;border:0;padding:10px 2px 9px;font-size:.7rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .ic{font-size:1.3rem;line-height:1}
+nav button.active{color:var(--teal);font-weight:700}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:.95rem;opacity:0;pointer-events:none;transition:.25s;z-index:20}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Navigation entre les jours */
+.daynav{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.daynav .arrow{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:1.1rem;line-height:1;padding:0}
+.daynav .arrow:disabled{opacity:.35;cursor:default}
+.daynav .date{flex:1;color:var(--muted);font-size:.95rem;margin:0}
+.saved{font-size:.8rem;color:var(--teal);margin-top:6px}
+textarea{width:100%;min-height:80px;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font:inherit;color:inherit;resize:vertical}
+.dot{border:0;padding:0;display:block}
+
+/* Recherche + favoris */
+.search{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);margin:12px 0 4px}
+.idea .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.star{background:none;border:0;font-size:1.35rem;line-height:1;padding:0 2px;color:var(--muted)}
+.star.on{color:var(--peach)}
+.pick{border:2px solid var(--peach);background:var(--peach-soft)}
+
+/* Calendrier du bilan */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calhead h3{margin:0;text-transform:none}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .wd{text-align:center;font-size:.75rem;color:var(--muted)}
+.cal .d{aspect-ratio:1;border:0;border-radius:10px;background:var(--bg);font-size:.85rem;padding:0;display:grid;place-items:center;color:var(--ink)}
+.cal .d.s3{background:var(--teal);color:#fff}
+.cal .d.s2{background:var(--peach)}
+.cal .d.s1{background:var(--peach-soft)}
+.cal .d.today{box-shadow:inset 0 0 0 2px var(--water)}
+.cal .d.sel{box-shadow:inset 0 0 0 3px var(--ink)}
+.cal .d:disabled{opacity:.35;cursor:default}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.detail .line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.detail .line:last-of-type{border-bottom:0}
+.stats.six{grid-template-columns:repeat(3,1fr)}
+/* Bandeau jour passé */
+.banner{background:var(--peach-soft);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:.95rem}
+.banner .btn{padding:8px 12px;font-size:.9rem}
+/* Calendrier */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:12px 0 8px;text-align:center}
+.cal .hd{font-size:.75rem;color:var(--muted)}
+.cal button{aspect-ratio:1;border:0;border-radius:10px;background:var(--bg);font-size:.9rem;padding:0;position:relative;color:var(--ink)}
+.cal button:disabled{opacity:.35;cursor:default}
+.cal button.s1{background:var(--peach-soft)}
+.cal button.s2{background:var(--peach);color:#1C2826}
+.cal button.s3{background:var(--teal);color:#fff}
+.cal button.today{box-shadow:inset 0 0 0 2px var(--ink)}
+.cal button.sel{box-shadow:0 0 0 3px var(--water)}
+.cal button .w{position:absolute;bottom:1px;left:0;right:0;font-size:.55rem;line-height:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:4px}
+.cur{background:var(--teal-soft)}
+.switch{display:flex;gap:10px;align-items:flex-start;margin:6px 0 12px;font-size:.95rem}
+.switch input{width:22px;height:22px;flex:none;accent-color:var(--teal);margin-top:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+
+<!-- ========== AUJOURD'HUI ========== -->
+<section class="view active" id="v-today">
+  <div id="pastBanner"></div>
+  <div class="hero">
+    <div class="date" id="todayDate"></div>
+    <h1 id="hello">Ta journée</h1>
+    <svg class="slope" viewBox="0 0 320 70" aria-hidden="true" id="slopeSvg"></svg>
+    <div class="target" id="targetLine"></div>
+  </div>
+
+  <div class="block">
+    <div class="score">
+      <svg class="ring" viewBox="0 0 100 100" aria-label="Score du jour">
+        <circle class="bgc" cx="50" cy="50" r="40"/>
+        <circle class="fg" id="ringFg" cx="50" cy="50" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        <text x="50" y="58" text-anchor="middle" id="ringTxt">0</text>
+      </svg>
+      <div>
+        <h3>Score du jour</h3>
+        <p class="muted small" id="scoreMsg">Coche tes repas, ton eau et ta marche.</p>
+      </div>
+    </div>
+    <div class="week" id="weekDots"></div>
+  </div>
+
+  <h2>Eau</h2>
+  <div class="block">
+    <div class="row"><span id="waterTxt"></span><button class="btn ghost" id="waterMinus" aria-label="Retirer un verre">–1</button></div>
+    <div class="glasses" id="glasses"></div>
+    <p class="muted small">Un verre = 25 cl. Objectif 2 L, et 2,5 L les jours de marche.</p>
+  </div>
+
+  <h2>Repas</h2>
+  <div class="block" id="meals"></div>
+
+  <h2>Marche inclinée</h2>
+  <div class="block">
+    <div class="fields">
+      <label class="f">Minutes<input type="number" inputmode="numeric" id="wMin" min="0"></label>
+      <label class="f">Pente %<input type="number" inputmode="decimal" id="wPente" min="0" step="0.5"></label>
+      <label class="f">km/h<input type="number" inputmode="decimal" id="wVit" min="0" step="0.1"></label>
+    </div>
+    <button class="btn wide" id="wDone">Séance faite</button>
+    <p class="muted small" style="margin-top:10px">Le chrono guidé est dans l'onglet Sport.</p>
+  </div>
+</section>
+
+<!-- ========== GUIDE ========== -->
+<section class="view" id="v-guide">
+  <h1>Le guide</h1>
+  <p class="muted">Tout ce qu'il faut savoir, en version simple. Tu n'as rien à peser ni à compter.</p>
+
+  <details open><summary>La règle de l'assiette</summary><div>
+    <p>À chaque repas, mets ces 3 choses :</p>
+    <div class="plate">
+      <div class="p"><b>Une protéine</b>La plus importante. Elle te cale et protège tes muscles.</div>
+      <div class="f"><b>Un féculent</b>La taille de ton poing.</div>
+      <div class="s"><b>Fruit ou soupe</b>Ce sont tes fibres.</div>
+    </div>
+    <p>Ajoute un peu de gras, environ la taille de ton pouce (huile, fromage, beurre de cacahuète). C'est tout.</p>
+    <p>Au goûter : <b>une protéine + un fruit</b>.</p>
+    <div class="note">Encore faim ? Rajoute de la protéine ou de la soupe, pas du féculent.</div>
+  </div></details>
+
+  <details><summary>Les protéines</summary><div>
+    <p>Une portion de protéine, c'est :</p>
+    <ul>
+      <li>1 pot de skyr ou de fromage blanc (environ 150 g)</li>
+      <li>2 ou 3 œufs</li>
+      <li>½ boîte de pois chiches ou de lentilles</li>
+      <li>4 ou 5 falafels</li>
+      <li>Environ 50 g de feta ou de fromage</li>
+      <li>1 bol d'edamame</li>
+      <li>1 grand verre de lait + 1 yaourt nature</li>
+      <li>100 g de tofu (fumé, il se mange tel quel)</li>
+    </ul>
+    <p class="muted small">Le skyr et le fromage blanc sont tes meilleurs amis : beaucoup de protéines, très peu de calories, rien à cuisiner.</p>
+  </div></details>
+
+  <details><summary>Les féculents</summary><div>
+    <p>Une portion = la taille de ton poing :</p>
+    <ul>
+      <li>1 sachet de riz micro-ondes pour 2 repas (moitié par repas)</li>
+      <li>2 tranches de pain complet, ou 1 wrap, ou 1 pita</li>
+      <li>40 à 50 g de flocons d'avoine ou de muesli sans sucre ajouté</li>
+      <li>1 banane compte aussi comme féculent le matin</li>
+    </ul>
+    <p>Choisis la version complète quand tu peux : elle cale plus longtemps.</p>
+  </div></details>
+
+  <details><summary>Les fibres (sans manger de légumes en morceaux)</summary><div>
+    <p>Les fibres calent, aident la digestion et évitent les fringales. Tes sources :</p>
+    <ul>
+      <li>Les soupes et veloutés, même en brique</li>
+      <li>Les épinards surgelés cachés dans les smoothies (on ne les sent pas)</li>
+      <li>Les fruits entiers, plutôt que les jus</li>
+      <li>Les lentilles, pois chiches, edamame</li>
+      <li>Les flocons d'avoine et le pain complet</li>
+    </ul>
+    <div class="note">Si tu augmentes les fibres, bois plus d'eau en même temps, sinon ça peut ballonner.</div>
+  </div></details>
+
+  <details><summary>Le gras</summary><div>
+    <p>Il en faut un peu (pour les hormones et pour le goût), mais c'est très calorique. Une portion = ton pouce :</p>
+    <ul>
+      <li>1 cuillère à soupe d'huile d'olive</li>
+      <li>1 cuillère à soupe de beurre de cacahuète</li>
+      <li>1 poignée d'amandes ou de noix</li>
+      <li>1 portion de fromage râpé</li>
+    </ul>
+    <p>Le houmous compte à la fois en gras et un peu en protéine : 2 bonnes cuillères, pas le pot.</p>
+  </div></details>
+
+  <details><summary>Les boissons</summary><div>
+    <ul>
+      <li><b>À volonté :</b> eau, eau pétillante, thé, tisane, café (sans sucre).</li>
+      <li><b>OK avec modération :</b> boissons zéro, lait dans le café.</li>
+      <li><b>Compte comme un repas ou un goûter :</b> smoothies et milkshakes. Ne les ajoute pas en plus d'un repas.</li>
+      <li><b>À éviter :</b> jus de fruits, sodas sucrés, thés glacés, cafés sucrés type frappuccino, alcool.</li>
+    </ul>
+  </div></details>
+
+  <details><summary>L'eau</summary><div>
+    <ul>
+      <li>1,5 à 2 L par jour, plus 50 cl les jours de marche.</li>
+      <li>Les soupes, le thé et le lait comptent dedans.</li>
+      <li>Le repère : pipi jaune clair = c'est bon. Foncé = bois plus.</li>
+      <li>Astuce : une grande gourde que tu remplis 2 fois dans la journée.</li>
+    </ul>
+  </div></details>
+
+  <details><summary>Les quantités et le rythme</summary><div>
+    <ul>
+      <li>En suivant la règle de l'assiette sur 3 repas + 1 goûter, tu tombes autour de <b>1500 à 1600 kcal</b>, ce qui fait un déficit raisonnable.</li>
+      <li>Rythme sain : <b>0,5 à 1 kg par semaine</b>. Pour 30 kg, compte 8 à 12 mois.</li>
+      <li>Ne mange jamais moins que ça pour aller plus vite : tu perdrais du muscle, tu serais crevée et tu reprendrais tout après.</li>
+      <li>Pèse-toi une fois par semaine, toujours le même jour, au réveil. Le poids bouge de 1 à 2 kg d'un jour à l'autre, c'est de l'eau.</li>
+    </ul>
+  </div></details>
+
+  <details><summary>Les règles d'or</summary><div>
+    <ul>
+      <li>Jamais de repas sans protéine.</li>
+      <li>Ne saute pas de repas : tu compenses toujours plus tard.</li>
+      <li>Mange assis, sans écran si possible, et lentement.</li>
+      <li>Garde chez toi seulement ce qui est sur la liste de courses.</li>
+      <li>Dors 7 à 8 h : le manque de sommeil augmente la faim.</li>
+      <li>Un écart ne ruine rien. Le repas suivant, tu reprends normalement, sans compenser en mangeant moins.</li>
+      <li>1 repas plaisir par semaine, c'est prévu et c'est ok.</li>
+    </ul>
+  </div></details>
+
+  <details><summary>Faim et envies de sucré</summary><div>
+    <ul>
+      <li>Faim entre les repas : un grand verre d'eau, puis skyr, œuf dur ou edamame.</li>
+      <li>Envie de sucré : un fruit, un skyr avec un peu de cacao et de miel, ou un carré de chocolat noir.</li>
+      <li>Le soir devant une série : une tisane, ou un bol de fraises surgelées.</li>
+      <li>Si tu as faim tout le temps, c'est souvent qu'il manque de la protéine ou que tu ne dors pas assez.</li>
+    </ul>
+  </div></details>
+
+  <details><summary>Santé : à surveiller</summary><div>
+    <ul>
+      <li>Fais un bilan chez le médecin au début (prise de sang : fer, thyroïde, vitamine D).</li>
+      <li>En végétarienne, le fer est le point faible classique : lentilles, pois chiches, œufs, épinards, et un fruit riche en vitamine C au même repas aide à l'absorber.</li>
+      <li>Pas besoin de complément B12 si tu manges régulièrement œufs et laitages.</li>
+    </ul>
+    <div class="alert">Arrête de réduire et parles-en à ton médecin si tu as des vertiges, une grosse fatigue qui dure, des règles qui s'arrêtent, si tu perds plus d'1 kg par semaine pendant plusieurs semaines, ou si tu te sens obsédée par la nourriture ou la balance.</div>
+  </div></details>
+</section>
+
+<!-- ========== REPAS ========== -->
+<section class="view" id="v-food">
+  <h1>Idées repas</h1>
+  <p class="muted">Végétarien, zéro vraie cuisine. Les tags montrent ce que chaque idée coche.</p>
+  <div class="chips" id="foodFilters"></div>
+  <div class="tags" style="margin-top:12px"><span class="tag P">Protéine</span><span class="tag F">Féculent</span><span class="tag S">Fruit ou soupe</span></div>
+  <div id="ideas"></div>
+
+  <h2>Liste de courses</h2>
+  <div class="row"><p class="muted small" style="margin:0">Coche au fur et à mesure.</p><button class="btn ghost" id="resetCourses">Tout décocher</button></div>
+  <div id="courses"></div>
+</section>
+
+<!-- ========== SPORT ========== -->
+<section class="view" id="v-sport">
+  <h1>Sport</h1>
+  <p class="muted" id="sportWeek"></p>
+
+  <div class="block timer">
+    <div class="chips" style="justify-content:center;margin:0 0 14px" id="timerMode"></div>
+    <div class="phase" id="tPhase">Prête ?</div>
+    <div class="clock" id="tClock">00:00</div>
+    <div class="set" id="tSet">Choisis ta séance puis appuie sur Démarrer.</div>
+    <div class="bar"><i id="tBar"></i></div>
+    <p class="muted small" id="tTotal"></p>
+    <div class="btns">
+      <button class="btn" id="tStart">Démarrer</button>
+      <button class="btn ghost" id="tReset">Réinitialiser</button>
+    </div>
+    <button class="btn done wide" id="tSave" style="margin-top:12px;display:none">Enregistrer la séance</button>
+  </div>
+
+  <h2>Ma séance</h2>
+  <div class="block">
+    <div class="fields">
+      <label class="f">Pente cible %<input type="number" inputmode="decimal" step="0.5" min="0" max="15" id="pPente"></label>
+      <label class="f">km/h<input type="number" inputmode="decimal" step="0.1" min="1" id="pVit"></label>
+      <label class="f">Minutes<input type="number" inputmode="numeric" min="5" id="pMin"></label>
+    </div>
+    <label class="switch"><input type="checkbox" id="pRamp"><span>Montée progressive : je commence à 10 % et j'ajoute 1 % par semaine jusqu'à ma pente cible.</span></label>
+    <button class="btn alt wide" id="pSave">Enregistrer ma séance</button>
+  </div>
+  <div id="planBox"></div>
+  <p class="muted small">5 à 6 séances par semaine. Le chrono ajoute 5 min d'échauffement et 5 min de retour au calme autour de ta séance.</p>
+
+  <h2>Pour que ce soit efficace</h2>
+  <ul>
+    <li><b>Ne tiens pas les barres.</b> C'est l'erreur n°1. Laisse tes bras balancer.</li>
+    <li><b>La pente compte plus que la vitesse.</b> 10–12 % à 4,5 km/h vaut mieux que 3 % à 6 km/h.</li>
+    <li><b>Le bon effort :</b> essoufflée, mais capable de dire une phrase courte.</li>
+    <li><b>Posture :</b> droite, regard devant, tout le pied posé.</li>
+    <li><b>Des baskets</b> avec un bon amorti, pas des chaussons.</li>
+    <li><b>La régularité bat l'intensité :</b> 40 min 5 fois par semaine vaut mieux que 1h30 une fois.</li>
+    <li>Mets une série ou un podcast, ça passe beaucoup plus vite.</li>
+    <li><b>À 13–15 % de pente</b>, étire tes mollets après chaque séance. Si tu as mal aux tibias, aux mollets, au tendon d'Achille ou au bas du dos, redescends de 2–3 % pendant une semaine.</li>
+  </ul>
+
+  <h2>Bonus renfo (2 fois par semaine)</h2>
+  <p>15 minutes, 3 tours avec 1 minute de pause entre chaque tour :</p>
+  <ul>
+    <li>12 squats</li>
+    <li>10 fentes par jambe</li>
+    <li>8 pompes sur les genoux</li>
+    <li>30 secondes de gainage</li>
+  </ul>
+  <p class="muted small">Ça garde tes muscles pendant que tu perds du poids, et ça raffermit.</p>
+</section>
+
+<!-- ========== PROGRÈS ========== -->
+<section class="view" id="v-progress">
+  <h1>Bilan</h1>
+  <p class="muted">Tout s'enregistre automatiquement, jour par jour, dès que tu coches quelque chose.</p>
+  <div class="chips" id="periodChips"></div>
+  <div class="stats" id="sumStats"></div>
+  <div class="stats" id="sumStats2"></div>
+  <div id="sumMsg"></div>
+
+  <h2>Calendrier</h2>
+  <div class="block">
+    <div class="row">
+      <button class="btn ghost" id="calPrev" aria-label="Mois précédent">‹</button>
+      <h3 id="calTitle" style="margin:0"></h3>
+      <button class="btn ghost" id="calNext" aria-label="Mois suivant">›</button>
+    </div>
+    <div class="cal" id="cal"></div>
+    <div class="legend"><span><i style="background:var(--teal)"></i>80 et +</span><span><i style="background:var(--peach)"></i>50 à 79</span><span><i style="background:var(--peach-soft)"></i>moins de 50</span><span>● marche faite</span></div>
+  </div>
+  <div id="dayDetail"></div>
+
+  <h2>Poids</h2>
+  <div class="block">
+    <h3>Pesée de la semaine</h3>
+    <p class="muted small">Une fois par semaine, même jour, au réveil.</p>
+    <div class="fields" style="grid-template-columns:1fr 1fr">
+      <label class="f">Date<input type="date" id="wtDate"></label>
+      <label class="f">Poids (kg)<input type="number" inputmode="decimal" step="0.1" id="wtKg"></label>
+    </div>
+    <button class="btn wide" id="wtAdd">Ajouter la pesée</button>
+  </div>
+  <div id="rateMsg"></div>
+  <div class="stats" id="wStats"></div>
+  <div class="block"><svg class="chart" id="chart" viewBox="0 0 340 190"></svg></div>
+  <div class="hist" id="wHist"></div>
+
+  <h2>Sauvegarde</h2>
+  <div class="block">
+    <p class="small">Ta progression reste dans le navigateur de ton téléphone. Si tu changes de téléphone ou vides ton cache, elle disparaît : télécharge une copie de temps en temps.</p>
+    <button class="btn wide" id="exportBtn">Télécharger ma sauvegarde</button>
+    <label class="btn ghost wide" style="display:block;text-align:center;margin-top:8px">Restaurer une sauvegarde<input type="file" accept=".json,application/json" id="importIn" hidden></label>
+  </div>
+
+  <h2>Réglages</h2>
+  <div class="block">
+    <div class="fields">
+      <label class="f">Début<input type="date" id="sStart"></label>
+      <label class="f">Poids départ<input type="number" step="0.1" id="sStartW"></label>
+      <label class="f">Objectif<input type="number" step="0.1" id="sGoal"></label>
+    </div>
+    <button class="btn alt wide" id="sSave">Enregistrer les réglages</button>
+    <button class="btn ghost wide" id="sReset" style="margin-top:8px">Effacer toutes mes données</button>
+  </div>
+</section>
+
+</main>
+
+<nav><div class="in">
+  <button data-v="today" class="active"><span class="ic">☀️</span>Jour</button>
+  <button data-v="guide"><span class="ic">📖</span>Guide</button>
+  <button data-v="food"><span class="ic">🥣</span>Repas</button>
+  <button data-v="sport"><span class="ic">🚶‍♀️</span>Sport</button>
+  <button data-v="progress"><span class="ic">📈</span>Bilan</button>
+</div></nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Données & sauvegarde ---------- */
+const KEY = "mon-plan-v1";
+const pad = n => String(n).padStart(2, "0");
+const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => new Date(s + "T00:00:00");
+const todayKey = () => fmt(new Date());
+const $ = id => document.getElementById(id);
+const nf = (n, dec = 1) => Number(Number(n).toFixed(dec)).toString().replace(".", ",");
+const liters = glasses => nf(glasses * 0.25, 2) + " L";
+const longDate = k => parse(k).toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long" });
+
+const fresh = () => ({ settings:{ start:todayKey(), startWeight:80, goal:50 }, walk:{ pente:15, vit:4.5, min:30, ramp:true }, days:{}, weights:[], courses:{} });
+function load(){ try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.settings) return s; } catch(e){} return null; }
+let S = load() || fresh();
+function migrate(){
+  const f = fresh();
+  S.walk = Object.assign(f.walk, S.walk || {});
+  S.days = S.days || {}; S.weights = S.weights || []; S.courses = S.courses || {};
+}
+migrate();
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){ toast("Sauvegarde impossible sur ce navigateur"); } }
+
+const MEALS = [
+  { k:"pdj", n:"Petit-déj", c:["Protéine","Féculent","Fruit ou soupe"] },
+  { k:"midi", n:"Midi", c:["Protéine","Féculent","Fruit ou soupe"] },
+  { k:"gouter", n:"Goûter", c:["Protéine","Fruit"] },
+  { k:"soir", n:"Soir", c:["Protéine","Féculent","Soupe ou fruit"] }
+];
+function day(k){
+  if (!S.days[k]) S.days[k] = { water:0, meals:{ pdj:[0,0,0], midi:[0,0,0], gouter:[0,0], soir:[0,0,0] }, walk:{ min:"", pente:"", vit:"", done:false } };
+  return S.days[k];
+}
+const waterGoal = d => d.walk.done ? 10 : 8;
+function scoreOf(d){
+  if (!d) return 0;
+  let tot = 0, got = 0;
+  for (const m of MEALS){ tot += d.meals[m.k].length; got += d.meals[m.k].filter(Boolean).length; }
+  return Math.round(got / tot * 55 + Math.min(1, d.water / waterGoal(d)) * 25 + (d.walk.done ? 20 : 0));
+}
+
+/* ---------- Programme de marche ---------- */
+function progWeek(k = todayKey()){
+  const n = Math.floor((parse(k) - parse(S.settings.start)) / 864e5);
+  return Math.max(1, Math.floor(n / 7) + 1);
+}
+function walkPlan(w = progWeek()){
+  const p = S.walk;
+  const startP = Math.min(10, p.pente);
+  const pente = p.ramp ? Math.min(p.pente, startP + (w - 1)) : p.pente;
+  return { pente, vit:p.vit, min:p.min, hi:pente, mid:Math.max(0, pente - 5), rounds:Math.max(2, Math.round(p.min / 5)) };
+}
+
+/* ---------- Toast & navigation ---------- */
+let tt;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1900); }
+function go(v){
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("active", x.dataset.v === v));
+  document.querySelectorAll(".view").forEach(el => el.classList.toggle("active", el.id === "v-" + v));
+  if (v === "progress") renderBilan();
+  if (v === "today") renderToday();
+  if (v === "sport") renderSport();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => { if (b.dataset.v === "today") viewKey = todayKey(); go(b.dataset.v); });
+
+/* ---------- Jour ---------- */
+let viewKey = todayKey();
+function renderToday(){
+  const tk = todayKey(), isToday = viewKey === tk;
+  const d = day(viewKey);
+  const w = progWeek(viewKey), p = walkPlan(w);
+
+  $("pastBanner").innerHTML = isToday ? "" :
+    `<div class="banner"><span>Tu modifies le <b>${longDate(viewKey)}</b></span><button class="btn ghost" id="backToday">Aujourd'hui</button></div>`;
+  if (!isToday) $("backToday").onclick = () => { viewKey = tk; renderToday(); };
+
+  $("todayDate").textContent = longDate(viewKey) + ` — semaine ${w} du programme`;
+  $("hello").textContent = isToday ? "Ta journée" : "Ce jour-là";
+
+  const ang = Math.atan((p.pente * 3) / 100);
+  const len = 250, x2 = 20 + len * Math.cos(ang), y2 = Math.max(6, 60 - len * Math.sin(ang));
+  $("slopeSvg").innerHTML = `<line class="ground" x1="10" y1="60" x2="310" y2="60"/><line x1="20" y1="60" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/><text x="${(x2 + 8).toFixed(0)}" y="${(y2 + 14).toFixed(0)}">${nf(p.pente)} %</text>`;
+  $("targetLine").innerHTML = `<span><b>${p.min}</b> min</span><span><b>${nf(p.pente)}</b> % de pente</span><span><b>${nf(p.vit)}</b> km/h</span>`;
+
+  const g = waterGoal(d);
+  $("glasses").innerHTML = "";
+  for (let i = 0; i < g; i++){
+    const b = document.createElement("button");
+    b.className = "glass" + (i < d.water ? " full" : "");
+    b.setAttribute("aria-label", `Verre ${i+1}`);
+    b.innerHTML = `<span>${i+1}</span>`;
+    b.onclick = () => { d.water = (i === d.water - 1) ? i : i + 1; save(); renderToday(); };
+    $("glasses").appendChild(b);
+  }
+  $("waterTxt").innerHTML = `<b>${liters(d.water)}</b> sur ${liters(g)}`;
+
+  $("meals").innerHTML = "";
+  MEALS.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "meal";
+    div.innerHTML = `<h3>${m.n}</h3><div class="chips"></div>`;
+    m.c.forEach((label, i) => {
+      const c = document.createElement("button");
+      const on = !!d.meals[m.k][i];
+      c.className = "chip" + (on ? " on" : "");
+      c.textContent = (on ? "✓ " : "") + label;
+      c.setAttribute("aria-pressed", on);
+      c.onclick = () => { d.meals[m.k][i] = on ? 0 : 1; save(); renderToday(); };
+      div.querySelector(".chips").appendChild(c);
+    });
+    $("meals").appendChild(div);
+  });
+
+  $("wMin").value = d.walk.min; $("wPente").value = d.walk.pente; $("wVit").value = d.walk.vit;
+  $("wMin").placeholder = p.min; $("wPente").placeholder = p.pente; $("wVit").placeholder = p.vit;
+  $("wDone").textContent = d.walk.done ? "✓ Séance faite (annuler)" : "Séance faite";
+  $("wDone").classList.toggle("done", d.walk.done);
+
+  const sc = scoreOf(d);
+  $("ringFg").style.strokeDashoffset = 251.3 * (1 - sc / 100);
+  $("ringTxt").textContent = sc;
+  $("scoreMsg").textContent = sc >= 90 ? "Journée parfaite. Continue comme ça." :
+    sc >= 60 ? "Bonne journée, il reste quelques cases." :
+    sc > 0 ? "C'est parti, chaque case compte." : "Coche tes repas, ton eau et ta marche.";
+
+  $("weekDots").innerHTML = "";
+  for (let i = 6; i >= 0; i--){
+    const dt = new Date(); dt.setDate(dt.getDate() - i);
+    const k = fmt(dt), s = scoreOf(S.days[k]);
+    const col = s >= 80 ? "var(--teal)" : s >= 50 ? "var(--peach)" : s > 0 ? "var(--peach-soft)" : "var(--line)";
+    const lbl = dt.toLocaleDateString("fr-FR", { weekday:"short" }).replace(".", "");
+    const div = document.createElement("div");
+    div.innerHTML = `${lbl}<div class="dot" style="background:${col};${k === viewKey ? "box-shadow:0 0 0 2px var(--ink)" : ""}"></div>`;
+    div.style.cursor = "pointer";
+    div.onclick = () => { viewKey = k; renderToday(); window.scrollTo(0, 0); };
+    $("weekDots").appendChild(div);
+  }
+}
+["wMin","wPente","wVit"].forEach(id => $(id).oninput = e => {
+  const map = { wMin:"min", wPente:"pente", wVit:"vit" };
+  day(viewKey).walk[map[id]] = e.target.value; save();
+});
+$("wDone").onclick = () => {
+  const d = day(viewKey);
+  d.walk.done = !d.walk.done;
+  if (d.walk.done){
+    const p = walkPlan(progWeek(viewKey));
+    if (!d.walk.min) d.walk.min = String(p.min);
+    if (!d.walk.pente) d.walk.pente = String(p.pente);
+    if (!d.walk.vit) d.walk.vit = String(p.vit);
+    toast("Bien joué 💪");
+  }
+  save(); renderToday();
+};
+$("waterMinus").onclick = () => { const d = day(viewKey); d.water = Math.max(0, d.water - 1); save(); renderToday(); };
+
+/* ---------- Idées repas (15 par moment) ---------- */
+const IDEAS = [
+  // Petit-déj
+  { t:"Smoothie skyr-banane", m:"pdj", c:"0 min, mixeur", tags:["P","F","S"], d:"150 g de skyr, 1 banane, 30 g de flocons d'avoine, un peu de lait, 1 c. à café de cacao." },
+  { t:"Smoothie vert caché", m:"pdj", c:"0 min, mixeur", tags:["P","F","S"], d:"Lait, 1 skyr, 1 poignée d'épinards surgelés, mangue surgelée, 2 c. à soupe de flocons. On ne sent pas les épinards." },
+  { t:"Smoothie cacahuète-chocolat", m:"pdj", c:"0 min, mixeur", tags:["P","F","S"], d:"Lait, 1 skyr, 1 banane, 1 c. à café de beurre de cacahuète, 1 c. à café de cacao. Goût dessert." },
+  { t:"Lassi mangue", m:"pdj", c:"0 min, mixeur", tags:["P","S"], d:"1 yaourt nature + 1 skyr, un peu de lait, mangue surgelée, une pincée de cardamome. Ajoute une tartine de pain complet." },
+  { t:"Fromage blanc muesli", m:"pdj", c:"0 min", tags:["P","F","S"], d:"1 pot de fromage blanc, 40 g de muesli sans sucre ajouté, 1 fruit coupé ou des fruits rouges." },
+  { t:"Bowl skyr granola", m:"pdj", c:"0 min", tags:["P","F","S"], d:"1 skyr, 30 g de granola peu sucré, fruits rouges surgelés décongelés au micro-ondes 30 s." },
+  { t:"Overnight oats fruits rouges", m:"pdj", c:"2 min la veille", tags:["P","F","S"], d:"Dans un pot : 40 g de flocons, 1 skyr, un peu de lait, fruits rouges. Au frigo la nuit." },
+  { t:"Overnight oats pomme-cannelle", m:"pdj", c:"2 min la veille", tags:["P","F","S"], d:"40 g de flocons, 1 fromage blanc, lait, 1 pomme en dés, cannelle. Au frigo la nuit." },
+  { t:"Porridge chocolat-banane", m:"pdj", c:"2 min micro-ondes", tags:["P","F","S"], d:"40 g de flocons + lait, 2 min au micro-ondes. Cacao, ½ banane, et 1 skyr mélangé par-dessus." },
+  { t:"Mug pancake", m:"pdj", c:"1 min 30 micro-ondes", tags:["P","F","S"], d:"Dans un mug : 1 œuf, 30 g de flocons, ½ banane écrasée, cannelle. Micro-ondes 1 min 30. Avec un skyr." },
+  { t:"Tartines œufs durs", m:"pdj", c:"0 min", tags:["P","F","S"], d:"2 tranches de pain complet, 2 œufs durs tout prêts écrasés avec sel et poivre, 1 fruit." },
+  { t:"Œufs brouillés micro-ondes", m:"pdj", c:"1 min 30 micro-ondes", tags:["P","F","S"], d:"2 œufs battus dans un bol, 1 min 30 au micro-ondes en remuant à mi-temps. Pain complet et 1 clémentine." },
+  { t:"Wrap œuf-fromage du matin", m:"pdj", c:"2 min", tags:["P","F","S"], d:"1 wrap, 2 œufs brouillés micro-ondes, 1 portion de fromage râpé. 1 fruit à côté." },
+  { t:"Faisselle miel et pain", m:"pdj", c:"0 min", tags:["P","F","S"], d:"1 faisselle, 1 c. à café de miel, 1 tranche de pain complet, 1 kiwi." },
+  { t:"Tartine fromage frais", m:"pdj", c:"0 min", tags:["P","F","S"], d:"2 tranches de pain complet, fromage frais, 1 œuf dur, 1 fruit. Version salée qui cale." },
+  // Midi
+  { t:"Wrap œufs-houmous", m:"midi", c:"3 min", tags:["P","F","S"], d:"1 wrap, 2 c. à soupe de houmous, 2 œufs durs en tranches, salade en sachet. Une pomme après." },
+  { t:"Bowl pois chiches-feta", m:"midi", c:"2 min micro-ondes", tags:["P","F","S"], d:"½ sachet de riz micro-ondes, ½ boîte de pois chiches rincés, feta, filet d'huile d'olive. 1 clémentine après." },
+  { t:"Falafels pita", m:"midi", c:"2 min micro-ondes", tags:["P","F"], d:"4 ou 5 falafels réchauffés, 1 pita, 2 c. à soupe de houmous. Un yaourt nature et un fruit." },
+  { t:"Wrap falafels sauce yaourt", m:"midi", c:"3 min", tags:["P","F","S"], d:"1 wrap, 4 falafels, sauce : yaourt nature + sel + menthe séchée. 1 fruit après." },
+  { t:"Salade de lentilles feta", m:"midi", c:"0 min", tags:["P","F","S"], d:"½ boîte de lentilles, feta, vinaigrette légère, pain complet. 1 fruit après." },
+  { t:"Dahl tout prêt", m:"midi", c:"3 min micro-ondes", tags:["P","F"], d:"1 dahl du rayon frais ou en conserve, ½ sachet de riz. Un fruit ou une soupe à côté." },
+  { t:"Lentilles coco-curry", m:"midi", c:"3 min micro-ondes", tags:["P","F"], d:"½ boîte de lentilles, 3 c. à soupe de lait de coco léger, 1 c. à café de curry, sel. Avec ½ sachet de riz." },
+  { t:"Bowl riz-œufs-soja", m:"midi", c:"3 min micro-ondes", tags:["P","F"], d:"½ sachet de riz, 2 œufs brouillés micro-ondes, 1 poignée d'edamame, sauce soja. Un fruit après." },
+  { t:"Pâtes fraîches pesto-mozza", m:"midi", c:"3 min casserole", tags:["P","F"], d:"Pâtes fraîches (3 min de cuisson), 1 c. à soupe de pesto, ½ boule de mozzarella. 1 fruit après." },
+  { t:"Quesadilla haricots rouges", m:"midi", c:"4 min poêle", tags:["P","F"], d:"1 wrap, ½ boîte de haricots rouges écrasés, fromage râpé, plié en deux, 2 min par face. Un fruit après." },
+  { t:"Pizza wrap", m:"midi", c:"4 min poêle", tags:["P","F"], d:"1 wrap, 2 c. à soupe de sauce tomate, ½ mozzarella, origan. Poêle couverte 4 min. Un yaourt et un fruit." },
+  { t:"Taboulé protéiné", m:"midi", c:"0 min", tags:["P","F","S"], d:"1 portion de taboulé tout prêt, ½ boîte de pois chiches, feta. 1 fruit après." },
+  { t:"Pita houmous-œuf-feta", m:"midi", c:"2 min", tags:["P","F","S"], d:"1 pita ouverte, houmous, 1 œuf dur, feta émiettée. 1 clémentine." },
+  { t:"Gaspacho et pita", m:"midi", c:"0 min", tags:["P","F","S"], d:"1 bol de gaspacho en brique, 1 pita avec houmous, 2 œufs durs. Parfait quand il fait chaud." },
+  { t:"Assiette pique-nique", m:"midi", c:"0 min", tags:["P","F","S"], d:"2 œufs durs, 1 portion de fromage, pain complet, 1 yaourt, 1 fruit. Zéro préparation." },
+  // Goûter
+  { t:"Skyr et fruit", m:"gouter", c:"0 min", tags:["P","S"], d:"1 skyr nature avec un fruit." },
+  { t:"Mousse chocolat protéinée", m:"gouter", c:"0 min", tags:["P"], d:"1 skyr, 1 c. à café de cacao, 1 c. à café de miel, bien mélangé. Ajoute un fruit." },
+  { t:"Glace express", m:"gouter", c:"0 min, mixeur", tags:["P","S"], d:"1 skyr + fruits rouges surgelés mixés : texture de glace. Parfait pour une envie de sucré." },
+  { t:"Edamame salés", m:"gouter", c:"3 min micro-ondes", tags:["P"], d:"1 bol d'edamame surgelés au micro-ondes avec du sel. Ultra rassasiant. Ajoute un fruit." },
+  { t:"Œuf dur et pomme", m:"gouter", c:"0 min", tags:["P","S"], d:"1 ou 2 œufs durs et une pomme." },
+  { t:"Milkshake fraise", m:"gouter", c:"0 min, mixeur", tags:["P","S"], d:"Grand verre de lait, 1 skyr, fraises surgelées, 1 c. à café de miel. Compte comme le goûter, pas en plus." },
+  { t:"Pomme beurre de cacahuète", m:"gouter", c:"0 min", tags:["P","S"], d:"1 pomme en tranches, 1 c. à soupe de beurre de cacahuète, 1 yaourt nature." },
+  { t:"Fromage et clémentines", m:"gouter", c:"0 min", tags:["P","S"], d:"2 mini fromages type Babybel et 2 clémentines." },
+  { t:"Faisselle fruits rouges", m:"gouter", c:"0 min", tags:["P","S"], d:"1 faisselle avec une poignée de fruits rouges." },
+  { t:"Cottage cheese ananas", m:"gouter", c:"0 min", tags:["P","S"], d:"1 pot de cottage cheese avec de l'ananas en morceaux (frais ou en boîte au naturel)." },
+  { t:"Kéfir et banane", m:"gouter", c:"0 min", tags:["P","S"], d:"1 grand verre de kéfir ou de lait fermenté nature, et une banane." },
+  { t:"Galettes de riz fromage", m:"gouter", c:"0 min", tags:["P","F"], d:"2 galettes de riz avec fromage frais, 1 œuf dur à côté, ou 1 fruit si tu as moins faim." },
+  { t:"Pois chiches grillés", m:"gouter", c:"0 min", tags:["P","S"], d:"1 petite poignée de pois chiches grillés en sachet, 1 fruit." },
+  { t:"Houmous et pain", m:"gouter", c:"0 min", tags:["P","F"], d:"2 c. à soupe de houmous, 1 petite pita ou des gressins, 1 œuf dur." },
+  { t:"Lait chocolat maison", m:"gouter", c:"1 min", tags:["P","S"], d:"Grand verre de lait chaud ou froid, cacao non sucré, 1 c. à café de miel. 1 fruit à côté." },
+  // Soir
+  { t:"Soupe complète lentilles", m:"soir", c:"3 min micro-ondes", tags:["P","F","S"], d:"1 bol de soupe en brique, ½ boîte de lentilles ou pois chiches dedans, 1 tranche de pain complet." },
+  { t:"Soupe et tartine fromage", m:"soir", c:"3 min", tags:["P","F","S"], d:"1 bol de soupe, 1 tartine de pain complet avec fromage frais, 1 ou 2 œufs durs." },
+  { t:"Omelette minute", m:"soir", c:"4 min poêle", tags:["P","F","S"], d:"2 ou 3 œufs battus, fromage râpé, sel, poivre. Avec du pain et une soupe." },
+  { t:"Tartine gratinée", m:"soir", c:"1 min micro-ondes", tags:["P","F","S"], d:"Pain complet, fromage râpé, 1 min au micro-ondes. Avec une soupe et un yaourt." },
+  { t:"Velouté et tofu fumé", m:"soir", c:"3 min", tags:["P","F","S"], d:"Velouté en brique avec du tofu fumé en dés dedans et une tranche de pain." },
+  { t:"Velouté de pois cassés", m:"soir", c:"3 min micro-ondes", tags:["P","F","S"], d:"Soupe de pois cassés en brique (déjà riche en protéines), 1 tranche de pain, 1 portion de fromage." },
+  { t:"Croque végé", m:"soir", c:"4 min poêle", tags:["P","F","S"], d:"2 tranches de pain complet, fromage, 2 min par face à la poêle. Avec un bol de soupe." },
+  { t:"Œufs cocotte", m:"soir", c:"1 min 30 micro-ondes", tags:["P","F","S"], d:"2 œufs dans un ramequin, 1 c. à soupe de crème légère, fromage râpé. 1 min 30 au micro-ondes. Pain et soupe." },
+  { t:"Shakshuka express", m:"soir", c:"6 min poêle", tags:["P","F","S"], d:"Sauce tomate en bocal chauffée dans une poêle, 2 œufs cassés dedans, couvre 5 min. À saucer avec du pain." },
+  { t:"Soupe de nouilles à l'œuf", m:"soir", c:"5 min casserole", tags:["P","F","S"], d:"Bouillon cube + nouilles 3 min, 1 œuf cassé dedans les 2 dernières minutes, sauce soja." },
+  { t:"Bouillon aux ravioles", m:"soir", c:"3 min casserole", tags:["P","F","S"], d:"Bouillon de légumes, 1 portion de ravioles au fromage, parmesan. Un yaourt après." },
+  { t:"Galette complète végé", m:"soir", c:"4 min poêle", tags:["P","F"], d:"1 galette de sarrasin toute prête, 1 œuf cassé dessus, fromage râpé, couvrir 3 min. Une soupe à côté." },
+  { t:"Soupe et falafels", m:"soir", c:"3 min micro-ondes", tags:["P","F","S"], d:"1 bol de soupe, 4 falafels, un peu de sauce yaourt, 1 petite pita." },
+  { t:"Assiette soupe-mezze", m:"soir", c:"3 min", tags:["P","F","S"], d:"1 bol de soupe, 2 c. à soupe de houmous, 1 œuf dur, feta, 1 pita." },
+  { t:"Dahl du soir", m:"soir", c:"3 min micro-ondes", tags:["P","F"], d:"½ dahl tout prêt avec ½ sachet de riz, et un velouté en entrée." }
+];
+const FILTERS = [ ["pdj","Petit-déj"], ["midi","Midi"], ["gouter","Goûter"], ["soir","Soir"], ["all","Tout"] ];
+let curFilter = "pdj";
+function renderIdeas(){
+  $("foodFilters").innerHTML = "";
+  FILTERS.forEach(([k, n]) => {
+    const b = document.createElement("button");
+    b.className = "chip filter" + (curFilter === k ? " on" : "");
+    const count = k === "all" ? IDEAS.length : IDEAS.filter(i => i.m === k).length;
+    b.textContent = `${n} (${count})`;
+    b.onclick = () => { curFilter = k; renderIdeas(); };
+    $("foodFilters").appendChild(b);
+  });
+  const lab = { P:"Protéine", F:"Féculent", S:"Fruit ou soupe" };
+  $("ideas").innerHTML = IDEAS.filter(i => curFilter === "all" || i.m === curFilter).map(i => `
+    <div class="idea"><h3>${i.t}</h3>
+      <div class="tags">${i.tags.map(t => `<span class="tag ${t}">${lab[t]}</span>`).join("")}<span class="tag">${i.c}</span></div>
+      <p class="small" style="margin:0">${i.d}</p></div>`).join("");
+}
+
+const COURSES = {
+  "Frais": ["Skyr nature","Fromage blanc","Faisselle","Cottage cheese","Yaourts nature","Kéfir","Lait","Œufs","Œufs durs tout prêts","Feta","Mozzarella","Fromage râpé","Fromage frais","Mini fromages (Babybel)","Houmous","Falafels","Tofu fumé","Dahl tout prêt","Pâtes fraîches","Ravioles au fromage","Galettes de sarrasin","Taboulé tout prêt"],
+  "Placards": ["Pois chiches en conserve","Lentilles en conserve","Haricots rouges en conserve","Riz micro-ondes","Nouilles","Flocons d'avoine","Muesli sans sucre ajouté","Granola peu sucré","Pain complet","Wraps ou pitas","Galettes de riz","Soupes en brique (~50 kcal/100 ml)","Velouté de pois cassés","Gaspacho","Sauce tomate en bocal","Pesto","Lait de coco léger","Bouillon cube","Sauce soja","Beurre de cacahuète","Pois chiches grillés","Cacao non sucré","Huile d'olive","Miel","Cannelle, curry, origan"],
+  "Surgelés": ["Fruits rouges","Mangue","Fraises","Épinards hachés","Edamame"],
+  "Fruits": ["Bananes","Pommes","Clémentines ou oranges","Kiwis","Ananas"],
+  "Boissons": ["Eau","Thé ou tisanes","Café"]
+};
+function renderCourses(){
+  let h = "";
+  for (const [g, items] of Object.entries(COURSES)){
+    h += `<h3 style="margin-top:18px">${g}</h3>`;
+    items.forEach(it => {
+      const on = !!S.courses[it];
+      h += `<label class="check ${on ? "got" : ""}"><input type="checkbox" data-it="${it}" ${on ? "checked" : ""}><span>${it}</span></label>`;
+    });
+  }
+  $("courses").innerHTML = h;
+  $("courses").querySelectorAll("input").forEach(i => i.onchange = () => { S.courses[i.dataset.it] = i.checked; save(); renderCourses(); });
+}
+$("resetCourses").onclick = () => { S.courses = {}; save(); renderCourses(); };
+
+/* ---------- Sport : séance perso + chrono ---------- */
+function renderSport(){
+  const w = progWeek(), p = walkPlan(w);
+  $("pPente").value = S.walk.pente; $("pVit").value = S.walk.vit; $("pMin").value = S.walk.min; $("pRamp").checked = S.walk.ramp;
+  $("sportWeek").textContent = `Semaine ${w} : ${p.min} min à ${nf(p.pente)} % de pente, ${nf(p.vit)} km/h.`;
+  if (S.walk.ramp && S.walk.pente > Math.min(10, S.walk.pente)){
+    const start = Math.min(10, S.walk.pente), weeks = Math.ceil(S.walk.pente - start) + 1;
+    let rows = "";
+    for (let i = 1; i <= weeks; i++){
+      const pp = Math.min(S.walk.pente, start + (i - 1));
+      rows += `<tr class="${i === Math.min(w, weeks) ? "cur" : ""}"><td>${i === weeks ? `${i} et +` : i}</td><td>${nf(pp)} %</td><td>${nf(S.walk.vit)} km/h</td><td>${S.walk.min} min</td></tr>`;
+    }
+    $("planBox").innerHTML = `<div class="tablewrap"><table><tr><th>Semaine</th><th>Pente</th><th>Vitesse</th><th>Durée</th></tr>${rows}</table></div>`;
+  } else {
+    $("planBox").innerHTML = `<div class="note">Chaque séance : ${S.walk.min} min à ${nf(S.walk.pente)} %, ${nf(S.walk.vit)} km/h.${S.walk.pente >= 13 ? " Si c'est trop dur au début, active la montée progressive." : ""}</div>`;
+  }
+  if (!running) buildPhases();
+}
+$("pSave").onclick = () => {
+  const pe = parseFloat(String($("pPente").value).replace(",", ".")), v = parseFloat(String($("pVit").value).replace(",", ".")), m = parseInt($("pMin").value, 10);
+  if (!(pe >= 0 && pe <= 15) || !(v > 0) || !(m >= 5)) return toast("Vérifie la pente (0–15 %), la vitesse et la durée");
+  S.walk = { pente:pe, vit:v, min:m, ramp:$("pRamp").checked };
+  save(); renderSport(); renderToday(); toast("Séance enregistrée");
+};
+
+let mode = "continu", phases = [], pi = 0, remain = 0, running = false, endAt = 0, iv = null, actx = null, wake = null;
+function buildPhases(){
+  const p = walkPlan();
+  if (mode === "continu"){
+    phases = [
+      { n:"Échauffement", s:300, set:"Pente 0–2 %, 4 km/h" },
+      { n:"Marche inclinée", s:p.min * 60, set:`Pente ${nf(p.pente)} %, ${nf(p.vit)} km/h. Lâche les barres.` },
+      { n:"Retour au calme", s:300, set:"Pente 0 %, 4 km/h" }
+    ];
+  } else {
+    phases = [{ n:"Échauffement", s:300, set:"Pente 0–2 %, 4 km/h" }];
+    for (let r = 1; r <= p.rounds; r++){
+      phases.push({ n:`Montée ${r}/${p.rounds}`, s:180, set:`Pente ${nf(p.hi)} %, ${nf(p.vit)} km/h` });
+      phases.push({ n:`Récup ${r}/${p.rounds}`, s:120, set:`Pente ${nf(p.mid)} %, ${nf(p.vit)} km/h` });
+    }
+    phases.push({ n:"Retour au calme", s:300, set:"Pente 0 %, 4 km/h" });
+  }
+  pi = 0; remain = phases[0].s; running = false;
+  $("tTotal").textContent = `Durée totale : ${Math.round(phases.reduce((a, x) => a + x.s, 0) / 60)} min`;
+  $("tSave").style.display = "none";
+  showTimer();
+}
+const mmss = s => { s = Math.max(0, Math.ceil(s)); return `${pad(Math.floor(s / 60))}:${pad(s % 60)}`; };
+function showTimer(){
+  const p = phases[pi];
+  $("tPhase").textContent = running || remain < p.s || pi > 0 ? p.n : "Prête ?";
+  $("tClock").textContent = mmss(remain);
+  $("tSet").textContent = p.set;
+  const tot = phases.reduce((a, x) => a + x.s, 0);
+  const done = phases.slice(0, pi).reduce((a, x) => a + x.s, 0) + (p.s - remain);
+  $("tBar").style.width = (done / tot * 100) + "%";
+  $("tStart").textContent = running ? "Pause" : (remain < p.s || pi > 0 ? "Reprendre" : "Démarrer");
+}
+function beep(n = 2){
+  try {
+    if (actx){
+      for (let i = 0; i < n; i++){
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.frequency.value = 880; o.connect(g); g.connect(actx.destination);
+        const t0 = actx.currentTime + i * 0.25;
+        g.gain.setValueAtTime(0.25, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.18);
+        o.start(t0); o.stop(t0 + 0.2);
+      }
+    }
+  } catch(e){}
+  if (navigator.vibrate) navigator.vibrate(200);
+}
+function tick(){
+  remain = (endAt - Date.now()) / 1000;
+  if (remain <= 0){
+    pi++;
+    if (pi >= phases.length){
+      pi = phases.length - 1; remain = 0; running = false; clearInterval(iv);
+      $("tPhase").textContent = "Séance terminée 🎉"; $("tClock").textContent = "00:00"; $("tBar").style.width = "100%";
+      $("tStart").textContent = "Démarrer"; $("tSave").style.display = "block"; beep(4); releaseWake();
+      return;
+    }
+    remain = phases[pi].s; endAt = Date.now() + remain * 1000; beep(2);
+  }
+  showTimer();
+}
+async function holdWake(){ try { if ("wakeLock" in navigator) wake = await navigator.wakeLock.request("screen"); } catch(e){} }
+function releaseWake(){ try { if (wake) wake.release(); wake = null; } catch(e){} }
+$("tStart").onclick = () => {
+  if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
+  if (running){ running = false; clearInterval(iv); releaseWake(); showTimer(); return; }
+  if ($("tSave").style.display === "block") buildPhases();
+  running = true; endAt = Date.now() + remain * 1000; iv = setInterval(tick, 250); holdWake(); showTimer();
+};
+$("tReset").onclick = () => { clearInterval(iv); releaseWake(); buildPhases(); };
+$("tSave").onclick = () => {
+  const d = day(todayKey()), p = walkPlan();
+  d.walk.min = String(Math.round(phases.reduce((a, x) => a + x.s, 0) / 60));
+  d.walk.pente = String(p.pente); d.walk.vit = String(p.vit); d.walk.done = true;
+  save(); toast("Séance enregistrée 💪"); $("tSave").style.display = "none";
+};
+function renderModes(){
+  $("timerMode").innerHTML = "";
+  [["continu","Séance continue"],["frac","Séance fractionnée"]].forEach(([k, n]) => {
+    const b = document.createElement("button");
+    b.className = "chip filter" + (mode === k ? " on" : "");
+    b.textContent = n;
+    b.onclick = () => { if (running) return toast("Mets d'abord en pause"); mode = k; renderModes(); buildPhases(); };
+    $("timerMode").appendChild(b);
+  });
+}
+
+/* ---------- Bilan ---------- */
+let period = 7, selKey = null, calY = new Date().getFullYear(), calM = new Date().getMonth();
+function rangeKeys(){
+  const end = parse(todayKey());
+  let start;
+  if (period === "all"){
+    const first = [S.settings.start, ...Object.keys(S.days)].sort()[0];
+    start = parse(first < todayKey() ? first : todayKey());
+  } else { start = new Date(end); start.setDate(start.getDate() - (period - 1)); }
+  const out = [];
+  for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) out.push(fmt(d));
+  return out;
+}
+function renderSummary(){
+  $("periodChips").innerHTML = "";
+  [[7,"7 jours"],[30,"30 jours"],["all","Depuis le début"]].forEach(([k, n]) => {
+    const b = document.createElement("button");
+    b.className = "chip filter" + (period === k ? " on" : "");
+    b.textContent = n;
+    b.onclick = () => { period = k; renderSummary(); };
+    $("periodChips").appendChild(b);
+  });
+  const keys = rangeKeys();
+  let tracked = 0, scoreSum = 0, water = 0, walks = 0, mins = 0, full = 0, mealTot = 0;
+  keys.forEach(k => {
+    const d = S.days[k], s = scoreOf(d);
+    if (!s) return;
+    tracked++; scoreSum += s; water += d.water;
+    if (d.walk.done){ walks++; mins += parseFloat(d.walk.min) || 0; }
+    MEALS.forEach(m => { mealTot++; if (d.meals[m.k].every(Boolean)) full++; });
+  });
+  const avg = tracked ? Math.round(scoreSum / tracked) : 0;
+  $("sumStats").innerHTML = `<div><b>${tracked}/${keys.length}</b>jours suivis</div><div><b>${avg}</b>score moyen</div><div><b>${tracked ? liters(water / tracked) : "0 L"}</b>d'eau par jour</div>`;
+  $("sumStats2").innerHTML = `<div><b>${walks}</b>séances de marche</div><div><b>${Math.round(mins)}</b>minutes de marche</div><div><b>${mealTot ? Math.round(full / mealTot * 100) : 0} %</b>repas complets</div>`;
+  let msg = "";
+  if (tracked >= 3){
+    const tips = [];
+    if (mealTot && full / mealTot < 0.6) tips.push("beaucoup de repas incomplets : vérifie surtout la protéine");
+    if (water / tracked < 6) tips.push("tu bois souvent moins de 1,5 L");
+    if (walks / keys.length < 0.5 && keys.length >= 7) tips.push("moins d'une séance de marche sur deux jours");
+    msg = tips.length ? `<div class="note">À améliorer : ${tips.join(", ")}.</div>` : `<div class="note">Rien à redire sur cette période. Continue exactement comme ça.</div>`;
+  }
+  $("sumMsg").innerHTML = msg;
+}
+function renderCal(){
+  const first = new Date(calY, calM, 1), tk = todayKey();
+  $("calTitle").textContent = first.toLocaleDateString("fr-FR", { month:"long", year:"numeric" });
+  let h = ["L","M","M","J","V","S","D"].map(x => `<div class="hd">${x}</div>`).join("");
+  const offset = (first.getDay() + 6) % 7;
+  for (let i = 0; i < offset; i++) h += "<div></div>";
+  const n = new Date(calY, calM + 1, 0).getDate();
+  for (let i = 1; i <= n; i++){
+    const k = fmt(new Date(calY, calM, i)), d = S.days[k], s = scoreOf(d);
+    const cls = [s >= 80 ? "s3" : s >= 50 ? "s2" : s > 0 ? "s1" : "", k === tk ? "today" : "", k === selKey ? "sel" : ""].join(" ");
+    h += `<button data-k="${k}" class="${cls}" ${k > tk ? "disabled" : ""} aria-label="${longDate(k)}">${i}${d && d.walk.done ? '<span class="w">●</span>' : ""}</button>`;
+  }
+  $("cal").innerHTML = h;
+  $("cal").querySelectorAll("button").forEach(b => b.onclick = () => { selKey = b.dataset.k; renderCal(); renderDayDetail(); });
+  const now = new Date();
+  $("calNext").disabled = calY > now.getFullYear() || (calY === now.getFullYear() && calM >= now.getMonth());
+}
+$("calPrev").onclick = () => { calM--; if (calM < 0){ calM = 11; calY--; } renderCal(); };
+$("calNext").onclick = () => { calM++; if (calM > 11){ calM = 0; calY++; } renderCal(); };
+function renderDayDetail(){
+  if (!selKey){ $("dayDetail").innerHTML = ""; return; }
+  const d = S.days[selKey], s = scoreOf(d);
+  let h = `<div class="block"><h3>${longDate(selKey)}</h3>`;
+  if (!s) h += `<p class="muted small">Rien de noté ce jour-là.</p>`;
+  else {
+    h += `<p>Score <b>${s}</b>/100, eau <b>${liters(d.water)}</b></p>`;
+    MEALS.forEach(m => { h += `<p class="small" style="margin:3px 0"><b>${m.n} :</b> ${m.c.map((c, i) => (d.meals[m.k][i] ? "✓ " : "✗ ") + c).join(", ")}</p>`; });
+    h += d.walk.done
+      ? `<p class="small" style="margin-top:6px"><b>Marche :</b> ${d.walk.min || "?"} min, pente ${d.walk.pente ? nf(d.walk.pente) : "?"} %, ${d.walk.vit ? nf(d.walk.vit) : "?"} km/h</p>`
+      : `<p class="small" style="margin-top:6px"><b>Marche :</b> pas de séance</p>`;
+    const wt = S.weights.find(w => w.date === selKey);
+    if (wt) h += `<p class="small"><b>Pesée :</b> ${nf(wt.kg)} kg</p>`;
+  }
+  h += `<button class="btn ghost wide" id="editDay" style="margin-top:8px">${s ? "Modifier ce jour" : "Remplir ce jour"}</button></div>`;
+  $("dayDetail").innerHTML = h;
+  $("editDay").onclick = () => { viewKey = selKey; go("today"); };
+}
+function renderWeights(){
+  const st = S.settings;
+  $("wtDate").value = todayKey();
+  $("sStart").value = st.start; $("sStartW").value = st.startWeight; $("sGoal").value = st.goal;
+  const ws = [...S.weights].sort((a, b) => a.date.localeCompare(b.date));
+  const cur = ws.length ? ws[ws.length - 1].kg : st.startWeight;
+  const lost = st.startWeight - cur, toLose = st.startWeight - st.goal;
+  const pct = toLose > 0 ? Math.max(0, Math.min(100, lost / toLose * 100)) : 0;
+  $("wStats").innerHTML = `<div><b>${nf(cur)}</b>kg actuel</div><div><b>${lost >= 0 ? "-" : "+"}${nf(Math.abs(lost))}</b>kg depuis le début</div><div><b>${Math.round(pct)} %</b>du chemin</div>`;
+
+  let msg = "";
+  if (ws.length >= 2){
+    const last = ws[ws.length - 1];
+    let ref = ws[0];
+    for (const w of ws){ if ((parse(last.date) - parse(w.date)) / 864e5 >= 13) ref = w; }
+    const days = (parse(last.date) - parse(ref.date)) / 864e5;
+    if (days >= 7){
+      const perWeek = (ref.kg - last.kg) / days * 7;
+      if (perWeek > 1.2) msg = `<div class="alert">Tu perds environ ${nf(perWeek)} kg par semaine, c'est trop rapide. Rajoute une collation (skyr + fruit) chaque jour pour protéger tes muscles et ta santé.</div>`;
+      else if (perWeek >= 0.3) msg = `<div class="note">Environ ${nf(perWeek)} kg par semaine : rythme parfait.</div>`;
+      else msg = `<div class="note">Le poids stagne un peu. C'est normal par moments (eau, cycle). Si ça dure plus de 3 semaines, vérifie que tu coches bien la règle de l'assiette sans en rajouter.</div>`;
+    }
+  }
+  $("rateMsg").innerHTML = msg;
+
+  const pts = [{ date:st.start, kg:st.startWeight }, ...ws.filter(w => w.date >= st.start)];
+  const W = 340, H = 190, L = 34, R = 10, T = 12, B = 26;
+  const kgs = pts.map(p => p.kg).concat([st.goal]);
+  const maxK = Math.ceil(Math.max(...kgs) + 1), minK = Math.floor(Math.min(...kgs) - 1);
+  const t0 = parse(pts[0].date).getTime();
+  const t1 = Math.max(parse(pts[pts.length - 1].date).getTime(), t0 + 28 * 864e5);
+  const X = t => L + (t - t0) / (t1 - t0) * (W - L - R);
+  const Y = k => T + (maxK - k) / (maxK - minK) * (H - T - B);
+  let svg = "";
+  const step = Math.max(1, Math.ceil((maxK - minK) / 5 / 5) * 5);
+  for (let k = Math.ceil(minK / step) * step; k <= maxK; k += step)
+    svg += `<line class="grid" x1="${L}" x2="${W - R}" y1="${Y(k)}" y2="${Y(k)}"/><text x="${L - 6}" y="${Y(k) + 4}" text-anchor="end">${k}</text>`;
+  svg += `<line class="goal" x1="${L}" x2="${W - R}" y1="${Y(st.goal)}" y2="${Y(st.goal)}"/><text x="${W - R}" y="${Y(st.goal) - 5}" text-anchor="end">objectif ${nf(st.goal)} kg</text>`;
+  svg += `<polyline class="line" points="${pts.map(p => `${X(parse(p.date).getTime()).toFixed(1)},${Y(p.kg).toFixed(1)}`).join(" ")}"/>`;
+  pts.forEach(p => svg += `<circle cx="${X(parse(p.date).getTime()).toFixed(1)}" cy="${Y(p.kg).toFixed(1)}" r="3.5"/>`);
+  const dl = d => parse(d).toLocaleDateString("fr-FR", { day:"numeric", month:"short" });
+  svg += `<text x="${L}" y="${H - 6}">${dl(pts[0].date)}</text>`;
+  if (pts.length > 1) svg += `<text x="${W - R}" y="${H - 6}" text-anchor="end">${dl(pts[pts.length - 1].date)}</text>`;
+  $("chart").innerHTML = svg;
+
+  $("wHist").innerHTML = ws.length ? [...ws].reverse().map(w =>
+    `<div class="row"><span>${parse(w.date).toLocaleDateString("fr-FR", { weekday:"short", day:"numeric", month:"long" })}</span><span><b>${nf(w.kg)} kg</b><button class="x" data-d="${w.date}" aria-label="Supprimer">×</button></span></div>`).join("")
+    : `<p class="muted small">Ajoute ta première pesée pour voir ta courbe.</p>`;
+  $("wHist").querySelectorAll(".x").forEach(b => b.onclick = () => { S.weights = S.weights.filter(w => w.date !== b.dataset.d); save(); renderWeights(); });
+}
+function renderBilan(){ renderSummary(); renderCal(); renderDayDetail(); renderWeights(); }
+
+$("wtAdd").onclick = () => {
+  const kg = parseFloat(String($("wtKg").value).replace(",", "."));
+  const dt = $("wtDate").value || todayKey();
+  if (!kg || kg < 30 || kg > 250) return toast("Entre un poids valide");
+  S.weights = S.weights.filter(w => w.date !== dt); S.weights.push({ date:dt, kg });
+  save(); $("wtKg").value = ""; toast("Pesée ajoutée"); renderWeights();
+};
+$("sSave").onclick = () => {
+  const sw = parseFloat($("sStartW").value), g = parseFloat($("sGoal").value);
+  if ($("sStart").value) S.settings.start = $("sStart").value;
+  if (sw) S.settings.startWeight = sw;
+  if (g) S.settings.goal = g;
+  save(); toast("Réglages enregistrés"); renderAll();
+};
+$("sReset").onclick = () => {
+  if (!confirm("Effacer toutes tes données (repas, eau, marche, pesées) ? C'est définitif.")) return;
+  try { localStorage.removeItem(KEY); } catch(e){}
+  S = fresh(); save(); viewKey = todayKey(); selKey = null; renderAll(); toast("Données effacées");
+};
+$("exportBtn").onclick = () => {
+  const blob = new Blob([JSON.stringify(S, null, 1)], { type:"application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = `mon-plan-sauvegarde-${todayKey()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("Sauvegarde téléchargée");
+};
+$("importIn").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const data = JSON.parse(r.result);
+      if (!data || !data.settings || typeof data.days !== "object") throw new Error();
+      if (!confirm("Remplacer tes données actuelles par cette sauvegarde ?")) return;
+      S = data; migrate(); save(); viewKey = todayKey(); renderAll(); toast("Sauvegarde restaurée");
+    } catch(err){ toast("Ce fichier n'est pas une sauvegarde valide"); }
+    e.target.value = "";
+  };
+  r.readAsText(f);
+};
+
+/* ---------- Changement de jour (si l'appli reste ouverte après minuit) ---------- */
+let lastToday = todayKey();
+function checkNewDay(){
+  if (lastToday !== todayKey()){
+    if (viewKey === lastToday) viewKey = todayKey();
+    lastToday = todayKey(); renderAll();
+  }
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) checkNewDay(); });
+setInterval(checkNewDay, 60000);
+
+/* ---------- Lancement ---------- */
+function renderAll(){ renderToday(); renderIdeas(); renderCourses(); renderModes(); renderSport(); renderBilan(); }
+renderAll();
+</script>
+</body>
+</html>
